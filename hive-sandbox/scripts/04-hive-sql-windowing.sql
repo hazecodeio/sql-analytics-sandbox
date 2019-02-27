@@ -16,6 +16,34 @@ STORED AS TEXTFILE;
 
 LOAD DATA LOCAL INPATH 'file:///home/hsmak/Development/git/data-sandbox/hive-sandbox/data/employee_contract.txt' OVERWRITE INTO TABLE employee_contract
 
+SELECT * FROM employee_contract;
+
+
+-- Windowing => Partition + Ordering
+
+-- 'PARTITION BY' - to show accumulative values from previous row. Accumulative per partition; partition
+
+SELECT employee_id, name, dept_num , salary, type, start_date,
+
+  row_number() OVER() as nonpartitioned_nonordered_row_n,
+  row_number() OVER(ORDER BY employee_id) as nonpartitioned_row_n,
+  row_number() OVER(PARTITION BY dept_num ORDER BY employee_id) as partitioned_row_n,
+  salary,
+  sum(salary) OVER (PARTITION BY dept_num ORDER BY employee_id) as total_salary,
+  sum(salary) OVER (PARTITION BY dept_num ORDER BY employee_id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as total_salary_2,
+  sum(salary) OVER (PARTITION BY dept_num ORDER BY employee_id ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) as total_salary_3
+
+  FROM employee_contract;
+
+
+
+
+
+
+
+
+
+
 --window aggregate functions
 SELECT name, dept_num as deptno, salary,
 
@@ -34,7 +62,9 @@ SELECT name, dept_num as deptno, salary,
   rank()          OVER (PARTITION BY dept_num ORDER BY salary) as rk,
   dense_rank()    OVER (PARTITION BY dept_num ORDER BY salary) as drk,
   percent_rank()  OVER (PARTITION BY dept_num ORDER BY salary) as prk,
-  ntile(4)        OVER (PARTITION BY dept_num ORDER BY salary) as ntile
+  ntile(4)        OVER (PARTITION BY dept_num ORDER BY salary) as ntile_4,
+  ntile(3)        OVER (PARTITION BY dept_num ORDER BY salary) as ntile_3,
+  ntile(2)        OVER (PARTITION BY dept_num ORDER BY salary) as ntile_2
 
   FROM employee_contract ORDER BY deptno, name;
 
