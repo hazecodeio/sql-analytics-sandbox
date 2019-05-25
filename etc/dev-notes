@@ -1,0 +1,15 @@
+--------------
+Instructions
+--------------
+
+1. Run hadoop first
+> ~/hadoop.start.sh
+
+2. Rune hiveserver2 in the background; You need to wait till hiveserver is fully up.
+> hiveserver2 &
+
+3. Connect through either:
+# hive command
+> hive
+# beeline command
+> $HIVE_HOME/bin/beeline -u "jdbc:hive2://localhost:10000/default" -n your_username
