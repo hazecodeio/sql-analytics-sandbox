@@ -34,7 +34,7 @@ SELECT employee_id, name, dept_num , salary, type, start_date,
   sum(salary) OVER (PARTITION BY dept_num ORDER BY employee_id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as total_salary_2,
   sum(salary) OVER (PARTITION BY dept_num ORDER BY employee_id ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) as total_salary_3
 
-  FROM employee_contract;
+FROM employee_contract;
 
 
 
@@ -45,7 +45,14 @@ SELECT employee_id, name, dept_num , salary, type, start_date,
 -- In the outer query, filter the result by selecting the top record in each partition
 SELECT * FROM
 (
-    SELECT employee_id, name, dept_num , salary, type, start_date, row_number() OVER(PARTITION BY dept_num ORDER BY salary DESC) AS r
+    SELECT
+        employee_id,
+        name,
+        dept_num ,
+        salary,
+        type,
+        start_date,
+        row_number() OVER(PARTITION BY dept_num ORDER BY salary DESC) AS r
     FROM employee_contract
 ) s
 WHERE s.r = 1;
@@ -63,7 +70,7 @@ SELECT name, dept_num as deptno, salary,
   sum(salary)               OVER (ORDER BY dept_num) as sum2,
   sum(salary)               OVER (ORDER BY dept_num, name) as sum3
 
-  FROM employee_contract ORDER BY deptno, name;
+FROM employee_contract ORDER BY deptno, name;
 
 --window sorting functions
 SELECT name, dept_num as deptno, salary,
@@ -76,14 +83,14 @@ SELECT name, dept_num as deptno, salary,
   ntile(3)        OVER (PARTITION BY dept_num ORDER BY salary) as ntile_3,
   ntile(2)        OVER (PARTITION BY dept_num ORDER BY salary) as ntile_2
 
-  FROM employee_contract ORDER BY deptno, name;
+FROM employee_contract ORDER BY deptno, name;
 
 --aggregate in over clause
 SELECT dept_num,
 
   rank()    OVER (PARTITION BY dept_num ORDER BY sum(salary)) as rk
 
-  FROM employee_contract GROUP BY dept_num;
+FROM employee_contract GROUP BY dept_num;
 
 
 
@@ -98,7 +105,7 @@ SELECT name, dept_num as deptno, salary,
   last_value(salary)  OVER (PARTITION BY dept_num ORDER BY salary) as lvalue,
   last_value(salary)  OVER (PARTITION BY dept_num ORDER BY salary RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS lvalue2
 
-  FROM employee_contract ORDER BY deptno, salary;
+FROM employee_contract ORDER BY deptno, salary;
 
 --window expression preceding and following
 SELECT name, dept_num as dno, salary AS sal,
@@ -111,7 +118,7 @@ SELECT name, dept_num as dno, salary AS sal,
   max(salary) OVER (PARTITION BY dept_num ORDER BY name ROWS 2 PRECEDING) win6,
   max(salary) OVER (PARTITION BY dept_num ORDER BY name ROWS UNBOUNDED PRECEDING) win7
 
-  FROM employee_contract ORDER BY dno, name;
+FROM employee_contract ORDER BY dno, name;
 
 --window expression current_row
 SELECT name, dept_num as dno, salary AS sal,
@@ -124,7 +131,7 @@ SELECT name, dept_num as dno, salary AS sal,
   max(salary) OVER (PARTITION BY dept_num ORDER BY name ROWS BETWEEN UNBOUNDED PRECEDING AND 1 FOLLOWING) win13,
   max(salary) OVER (PARTITION BY dept_num ORDER BY name ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) win14
 
-  FROM employee_contract ORDER BY dno, name;
+FROM employee_contract ORDER BY dno, name;
 
 --window reference
 SELECT name, dept_num, salary,
@@ -133,11 +140,10 @@ SELECT name, dept_num, salary,
   MAX(salary) OVER w2 AS win2,
   MAX(salary) OVER w3 AS win3
 
-  FROM employee_contract WINDOW
-      w1 as (PARTITION BY dept_num ORDER BY name ROWS BETWEEN 2 PRECEDING AND CURRENT ROW),
-      w2 as w3,
-      w3 as (PARTITION BY dept_num ORDER BY name ROWS BETWEEN 1 PRECEDING AND 2 FOLLOWING)
-;
+FROM employee_contract WINDOW
+  w1 as (PARTITION BY dept_num ORDER BY name ROWS BETWEEN 2 PRECEDING AND CURRENT ROW),
+  w2 as w3,
+  w3 as (PARTITION BY dept_num ORDER BY name ROWS BETWEEN 1 PRECEDING AND 2 FOLLOWING);
 
 --window with range type
 SELECT dept_num, start_date, name, salary,
@@ -145,7 +151,7 @@ SELECT dept_num, start_date, name, salary,
   max(salary) OVER (PARTITION BY dept_num ORDER BY salary RANGE BETWEEN 500 PRECEDING AND 1000 FOLLOWING) win1,
   max(salary) OVER (PARTITION BY dept_num ORDER BY salary RANGE BETWEEN 500 PRECEDING AND CURRENT ROW) win2
 
-  FROM employee_contract order by dept_num, start_date;
+FROM employee_contract order by dept_num, start_date;
 
 
 
