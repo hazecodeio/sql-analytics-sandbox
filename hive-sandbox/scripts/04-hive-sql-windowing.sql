@@ -37,8 +37,17 @@ SELECT employee_id, name, dept_num , salary, type, start_date,
 
 
 
-
-
+-- Problem Statement: find the highest-paid employee  in each department. Print all fields
+-- Note: Aggregate function won't work if more than one field is to be selected
+-- Solution:
+-- Windowing function in a subquery that would partition by dept_num and oder by salary.
+-- In the outer query, filter the result by selecting the top record in each partition
+SELECT * FROM
+(
+    SELECT employee_id, name, dept_num , salary, type, start_date, row_number() OVER(PARTITION BY dept_num ORDER BY salary DESC) AS r
+    FROM employee_contract
+) s
+WHERE s.r = 1;
 
 
 
