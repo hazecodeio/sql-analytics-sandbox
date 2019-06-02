@@ -30,6 +30,7 @@ SELECT employee_id, name, dept_num , salary, type, start_date,
   row_number() OVER(PARTITION BY dept_num ORDER BY employee_id) as partitioned_row_n,
   salary,
   sum(salary) OVER (PARTITION BY dept_num ORDER BY employee_id) as total_salary,
+  sum(salary) OVER (PARTITION BY dept_num ORDER BY employee_id ROWS BETWEEN 1 PRECEDING AND CURRENT ROW) as total_salary_1,
   sum(salary) OVER (PARTITION BY dept_num ORDER BY employee_id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as total_salary_2,
   sum(salary) OVER (PARTITION BY dept_num ORDER BY employee_id ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) as total_salary_3
 
