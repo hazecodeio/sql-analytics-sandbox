@@ -28,13 +28,15 @@ object DatasetSQLOpsOnNW extends App {
 
 
   /** ******************************************************
-    * ############ Creating SparkSession ###########
-    * ******************************************************/
+   * ############ Creating SparkSession ###########
+   * ***************************************************** */
 
   val spark = SparkSession
     .builder
     .master("local[*]") // ToDO: Which config takes precedence? MainApp hard-coded or spark-submit argument; mvn exec:exec?
     .appName("DatasetRunner")
+    .config("spark.sql.legacy.timeParserPolicy", "LEGACY")
+    //    .config("spark.sql.legacy.timeParserPolicy","CORRECTED")
     .getOrCreate()
 
 
@@ -42,8 +44,8 @@ object DatasetSQLOpsOnNW extends App {
 
 
   /** ******************************************************
-    * ############ Creating DataFrames from CSVs ###########
-    * ******************************************************/
+   * ############ Creating DataFrames from CSVs ###########
+   * ***************************************************** */
 
 
   val employeesDF = spark.read
@@ -68,8 +70,8 @@ object DatasetSQLOpsOnNW extends App {
 
 
   /** ****************************************************
-    * ############ Creating Datasets from DF ###########
-    * ****************************************************/
+   * ############ Creating Datasets from DF ###########
+   * *************************************************** */
 
 
   //Employees
@@ -109,8 +111,8 @@ object DatasetSQLOpsOnNW extends App {
 
 
   /** ******************************************************
-    * ################# Creating Views/Tables ##############
-    * ******************************************************/
+   * ################# Creating Views/Tables ##############
+   * ***************************************************** */
 
 
   employeesDS.createOrReplaceTempView("EmployeesTable")
@@ -120,8 +122,8 @@ object DatasetSQLOpsOnNW extends App {
 
 
   /** ******************************************************
-    * ################# SQL Operations #####################
-    * *******************************************************/
+   * ################# SQL Operations #####################
+   * ****************************************************** */
 
 
   //Joining two tables
@@ -165,15 +167,28 @@ object DatasetSQLOpsOnNW extends App {
   Sales_GROUPEDBY_Products.show
 
   /**
-    * for date/timestamp ops, refer to:
-    *   - https://spark.apache.org/docs/latest/api/sql/index.html#timestamp
-    *
-    * ```
-    * sql> trunc(to_date(OrdersTable.OrderDate, 'dd/mm/yy'), 'yyyy')
-    * ```
-    *
-    */
+   * for date/timestamp ops, refer to:
+   *   - https://spark.apache.org/docs/latest/api/sql/index.html#timestamp
+   *
+   * The following SQL might no longer work in Spark 3.0
+   * replace lower case 'mm' with one upper case 'M'
+   * use 'yyyy' or 'yy' will prepend '20' to the two-digit year??
+   * ```
+   * sql> trunc(to_date(OrdersTable.OrderDate, 'dd/mm/yy'), 'yyyy')
+   * ```
+   *
+   * Try the follwoing
+   * ```
+   * sql> select to_date('07/12/1984', 'd/M/yyyy');
+   * ```
+   *
+   */
 
+
+  // Data parsing has changed in Spark 3.0
+  // Use the below if you wish to use the legacy format
+  //  spark.sql("set spark.sql.legacy.timeParserPolicy=LEGACY")
+  //  spark.sql("set spark.sql.legacy.timeParserPolicy=CORRECTED")
 
   //Sales GroupedBy Products for 1997
   val Sales_GROUPEDBY_Products_1997 = spark.sql(
