@@ -39,7 +39,7 @@ DESCRIBE EXTENDED Employee;
 --------------------- LOAD data from LOCAL into the a Hive table ------------------------
 
 /*LOCAL means from local fileSystem. W/out LOCAL means within HDFS*/
-LOAD DATA LOCAL INPATH 'file:///home/hsmak/Development/git/data-sandbox/hive-sandbox/data/employee.txt' OVERWRITE INTO TABLE Employee
+LOAD DATA LOCAL INPATH 'file:///home/hsmak/Development/git/data-sandbox/hive-based/data/employee.txt' OVERWRITE INTO TABLE Employee
 
 SELECT * from Employee
 

@@ -14,7 +14,7 @@ ROW FORMAT DELIMITED
 FIELDS TERMINATED BY '|'
 STORED AS TEXTFILE;
 
-LOAD DATA LOCAL INPATH 'file:///home/hsmak/Development/git/data-sandbox/hive-sandbox/data/employee_contract.txt' OVERWRITE INTO TABLE employee_contract
+LOAD DATA LOCAL INPATH 'file:///home/hsmak/Development/git/data-sandbox/hive-based/data/employee_contract.txt' OVERWRITE INTO TABLE employee_contract
 
 SELECT * FROM employee_contract;
 

@@ -20,7 +20,7 @@ DESC employee_partitioned
 
 
 
-LOAD DATA LOCAL INPATH 'file:///home/hsmak/Development/git/data-sandbox/hive-sandbox/data/employee.txt'
+LOAD DATA LOCAL INPATH 'file:///home/hsmak/Development/git/data-sandbox/hive-based/data/employee.txt'
     OVERWRITE INTO TABLE Employee_Partitioned
     PARTITION (year=2018, month=12);
 

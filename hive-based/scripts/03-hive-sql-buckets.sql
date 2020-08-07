@@ -18,7 +18,7 @@ MAP KEYS TERMINATED BY ':';
 
 
 
-LOAD DATA LOCAL INPATH 'file:///home/hsmak/Development/git/data-sandbox/hive-sandbox/data/employee_id.txt' OVERWRITE INTO TABLE employee_id_buckets
+LOAD DATA LOCAL INPATH 'file:///home/hsmak/Development/git/data-sandbox/hive-based/data/employee_id.txt' OVERWRITE INTO TABLE employee_id_buckets
 
 SELECT * FROM employee_id_buckets;
 
