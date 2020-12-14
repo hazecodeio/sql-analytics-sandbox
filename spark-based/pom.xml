@@ -1,19 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>org.hsmak</groupId>
     <artifactId>spark-based</artifactId>
     <version>1.0-SNAPSHOT</version>
+
     <name>${project.artifactId}</name>
-    <description>My wonderfull scala app</description>
-    <inceptionYear>2018</inceptionYear>
-    <licenses>
-        <license>
-            <name>My License</name>
-            <url>http://....</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -85,7 +79,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -162,63 +156,6 @@
                 </executions>
             </plugin>
 
-            <!-- exec "spark-submit'-->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <executions>
-                    <execution>
-                        <id>run-local</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>spark-submit</executable>
-                            <arguments>
-
-                                <argument>--master</argument>
-                                <argument>local[*]</argument>
-
-                                <argument>--class</argument>
-                                <argument>${mainClass}
-                                </argument><!-- add an environment variable in each maven runner-->
-
-                                <!-- uncomment to enable debug mode -->
-                                <!--<argument>&#45;&#45;conf</argument>-->
-                                <!-- suspend=y so it will wait for debugger to attach itself-->
-                                <!--<argument>spark.driver.extraJavaOptions=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005</argument>-->
-
-                                <argument>
-                                    ${project.build.directory}/${project.artifactId}-${project.version}.jar
-                                </argument>
-
-                            </arguments>
-
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>run-yarn</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <environmentVariables>
-                                <HADOOP_CONF_DIR>
-                                    ${basedir}/spark-remote/conf
-                                </HADOOP_CONF_DIR>
-                            </environmentVariables>
-                            <executable>spark-submit</executable>
-                            <arguments>
-                                <argument>--master</argument>
-                                <argument>yarn</argument>
-                                <argument>${project.build.directory}/${project.artifactId}-${project.version}.jar
-                                </argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 </project>
