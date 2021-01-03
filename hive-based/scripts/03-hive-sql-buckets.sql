@@ -1,7 +1,7 @@
 
 DROP TABLE employee_id_buckets;
 
---Create the buckets table
+-- Create the buckets table
 CREATE TABLE employee_id_buckets (
     name STRING,
     employee_id INT,  -- Use this table column as bucket column later

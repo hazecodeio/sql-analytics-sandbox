@@ -1,7 +1,7 @@
 
 DROP TABLE IF EXISTS employee_contract;
 
---Prepare table and data for demonstration
+-- Prepare table and data for demonstration
 CREATE TABLE IF NOT EXISTS employee_contract(
     name string,
     dept_num int,
@@ -19,9 +19,9 @@ LOAD DATA LOCAL INPATH 'file:///home/hsmak/Development/git/data-sandbox/hive-bas
 SELECT * FROM employee_contract;
 
 
--- Windowing => Partition + Ordering
+--  Windowing => Partition + Ordering
 
--- 'PARTITION BY' - to show accumulative values from previous row. Accumulative per partition; partition
+--  'PARTITION BY' - to show accumulative values from previous row. Accumulative per partition; partition
 
 SELECT employee_id, name, dept_num , salary, type, start_date,
 
@@ -38,11 +38,11 @@ FROM employee_contract;
 
 
 
--- Problem Statement: find the highest-paid employee  in each department. Print all fields
--- Note: Aggregate function won't work if more than one field is to be selected
--- Solution:
--- Windowing function in a subquery that would partition by dept_num and oder by salary.
--- In the outer query, filter the result by selecting the top record in each partition
+--  Problem Statement: find the highest-paid employee  in each department. Print all fields
+--  Note: Aggregate function won't work if more than one field is to be selected
+--  Solution:
+--  Windowing function in a subquery that would partition by dept_num and oder by salary.
+--  In the outer query, filter the result by selecting the top record in each partition
 SELECT * FROM
 (
     SELECT
@@ -61,7 +61,7 @@ WHERE s.r = 1;
 
 
 
---window aggregate functions
+-- window aggregate functions
 SELECT name, dept_num as deptno, salary,
 
   count(*)                  OVER (PARTITION BY dept_num) as cnt,
@@ -72,7 +72,7 @@ SELECT name, dept_num as deptno, salary,
 
 FROM employee_contract ORDER BY deptno, name;
 
---window sorting functions
+-- window sorting functions
 SELECT name, dept_num as deptno, salary,
 
   row_number()    OVER () as rnum,
@@ -85,7 +85,7 @@ SELECT name, dept_num as deptno, salary,
 
 FROM employee_contract ORDER BY deptno, name;
 
---aggregate in over clause
+-- aggregate in over clause
 SELECT dept_num,
 
   rank()    OVER (PARTITION BY dept_num ORDER BY sum(salary)) as rk
@@ -95,7 +95,7 @@ FROM employee_contract GROUP BY dept_num;
 
 
 
---window analytics function
+-- window analytics function
 SELECT name, dept_num as deptno, salary,
 
   round(cume_dist()   OVER (PARTITION BY dept_num ORDER BY salary), 2) as cume,
@@ -107,7 +107,7 @@ SELECT name, dept_num as deptno, salary,
 
 FROM employee_contract ORDER BY deptno, salary;
 
---window expression preceding and following
+-- window expression preceding and following
 SELECT name, dept_num as dno, salary AS sal,
 
   max(salary) OVER (PARTITION BY dept_num ORDER BY name ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) win1,
@@ -120,7 +120,7 @@ SELECT name, dept_num as dno, salary AS sal,
 
 FROM employee_contract ORDER BY dno, name;
 
---window expression current_row
+-- window expression current_row
 SELECT name, dept_num as dno, salary AS sal,
 
   max(salary) OVER (PARTITION BY dept_num ORDER BY name ROWS BETWEEN CURRENT ROW AND CURRENT ROW) win8,
@@ -133,7 +133,7 @@ SELECT name, dept_num as dno, salary AS sal,
 
 FROM employee_contract ORDER BY dno, name;
 
---window reference
+-- window reference
 SELECT name, dept_num, salary,
 
   MAX(salary) OVER w1 AS win1,
@@ -145,7 +145,7 @@ FROM employee_contract WINDOW
   w2 as w3,
   w3 as (PARTITION BY dept_num ORDER BY name ROWS BETWEEN 1 PRECEDING AND 2 FOLLOWING);
 
---window with range type
+-- window with range type
 SELECT dept_num, start_date, name, salary,
 
   max(salary) OVER (PARTITION BY dept_num ORDER BY salary RANGE BETWEEN 500 PRECEDING AND 1000 FOLLOWING) win1,
@@ -157,20 +157,20 @@ FROM employee_contract order by dept_num, start_date;
 
 
 
---random sampling
+-- random sampling
 SELECT name FROM employee_hr DISTRIBUTE BY rand() SORT BY rand() LIMIT 2;
 
---Bucket table sampling example
---based on whole row
+-- Bucket table sampling example
+-- based on whole row
 SELECT name FROM employee_trans TABLESAMPLE(BUCKET 1 OUT OF 2 ON rand()) a;
---based on bucket column
+-- based on bucket column
 SELECT name FROM employee_trans TABLESAMPLE(BUCKET 1 OUT OF 2 ON emp_id) a;
 
---Block sampling - Sample by rows
+-- Block sampling - Sample by rows
 SELECT name FROM employee TABLESAMPLE(1 ROWS) a;
 
---Sample by percentage of data size
+-- Sample by percentage of data size
 SELECT name FROM employee TABLESAMPLE(50 PERCENT) a;
 
---Sample by data size
+-- Sample by data size
 SELECT name FROM employee TABLESAMPLE(3b) a;
