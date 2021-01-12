@@ -29,8 +29,10 @@ SELECT * FROM emp;
 --
 INSERT INTO emp(emp_id, emp_name, emp_city, emp_sal, emp_phone) VALUES (1, 'Husain', 'Chicago', 155000, 123456789);
 SELECT * FROM emp;
-UPDATE emp SET emp_sal = 165999, emp_phone=1112223456 WHERE emp_id =1;
+
+UPDATE emp SET emp_sal = 165999, emp_phone = 1112223456 WHERE emp_id = 1;
 SELECT * FROM emp;
+
 DELETE FROM emp WHERE emp_id = 1;
 SELECT * FROM emp;
 
@@ -66,3 +68,28 @@ ALTER TYPE card_details ADD email text;
 ALTER TYPE card_details RENAME email TO mail;
 select * from system_schema.types where keyspace_name = 'ksofhusain';
 select * from system_schema.tables where keyspace_name = 'ksofhusain';
+
+-- -- Static Columns --
+DROP TABLE if exists users_static_cols;
+CREATE TABLE users_static_cols(
+    username           text,
+    id                 timeuuid,
+    email              text STATIC,
+    encrypted_password blob STATIC,
+    body               text,
+    PRIMARY KEY ("username", "id")
+);
+select * from users_static_cols;
+
+insert into users_static_cols (username, id, email, encrypted_password, body)
+VALUES ('alice',
+        76e7a4d0-e796-11e3-90ce-5f98e903bf02,
+        'alice@gmail.com',
+        0x8914977ed729792e403da53024c6069a9158b8c4,
+        'Learning Cassandra!');
+select * from users_static_cols;
+
+INSERT INTO users_static_cols (username, id, body) VALUES ('alice', NOW(), 'Another status update');
+select * from users_static_cols;
+
+--
