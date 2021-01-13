@@ -44,6 +44,7 @@ DROP INDEX empindex;
 ALTER TABLE emp ADD emp_email_list list<text>;
 INSERT INTO emp(emp_id, emp_name, emp_city, emp_sal, emp_phone, emp_email_list) VALUES (2, 'Husain2', 'Raleigh', 155000, 123456789, ['11@11.com','22@22.com']);
 SELECT * FROM emp;
+SELECT * FROM emp where emp_name = 'Husain'; -- possible after creating an index on 'emp_name'
 
 ALTER TABLE emp DROP emp_email_set;
 ALTER TABLE emp ADD emp_email_set set<text>;
